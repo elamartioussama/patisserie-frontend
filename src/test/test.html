@@ -1,0 +1,327 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Timed Cards Opening</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: 'Arial', sans-serif;
+            background-color: #121212;
+            color: white;
+            height: 100vh;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            overflow: hidden;
+        }
+        
+        .container {
+            position: relative;
+            width: 100%;
+            max-width: 1200px;
+            height: 400px;
+            display: flex;
+            justify-content: center;
+            perspective: 1000px;
+        }
+        
+        .card {
+            position: absolute;
+            width: 200px;
+            height: 300px;
+            background-size: cover;
+            background-position: center;
+            border-radius: 8px;
+            box-shadow: 0 10px 20px rgba(0,0,0,0.3);
+            opacity: 0;
+            transform: translateY(50px) scale(0.8);
+            transition: all 0.6s ease-out;
+            cursor: pointer;
+            overflow: hidden;
+        }
+        
+        .card.active {
+            opacity: 1;
+            transform: translateY(0) scale(1);
+        }
+        
+        .card.expanded {
+            z-index: 100;
+            width: 600px;
+            height: 350px;
+            transition: all 0.8s ease;
+        }
+        
+        .card-content {
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            width: 100%;
+            padding: 20px;
+            background: linear-gradient(to top, rgba(0,0,0,0.8), transparent);
+            transform: translateY(100%);
+            transition: transform 0.5s ease-out;
+        }
+        
+        .card.expanded .card-content {
+            transform: translateY(0);
+        }
+        
+        .card h2 {
+            font-size: 1.5rem;
+            margin-bottom: 8px;
+            font-weight: 600;
+        }
+        
+        .card p {
+            font-size: 0.9rem;
+            opacity: 0.8;
+        }
+        
+        .timer {
+            position: absolute;
+            top: 10px;
+            right: 10px;
+            background: rgba(0,0,0,0.6);
+            padding: 4px 8px;
+            border-radius: 12px;
+            font-size: 12px;
+        }
+        
+        .controls {
+            margin-top: 30px;
+        }
+        
+        button {
+            background: #e60023;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 24px;
+            cursor: pointer;
+            font-weight: bold;
+            margin: 0 5px;
+        }
+        
+        button:hover {
+            background: #d20021;
+        }
+        
+        .thumbnails {
+            display: flex;
+            margin-top: 40px;
+            gap: 10px;
+        }
+        
+        .thumbnail {
+            width: 180px;
+            height: 120px;
+            background-size: cover;
+            background-position: center;
+            border-radius: 8px;
+            cursor: pointer;
+            position: relative;
+            overflow: hidden;
+            transition: transform 0.3s;
+        }
+        
+        .thumbnail:hover {
+            transform: translateY(-5px);
+        }
+        
+        .thumbnail .time {
+            position: absolute;
+            top: 8px;
+            left: 8px;
+            background: rgba(0,0,0,0.6);
+            padding: 2px 6px;
+            border-radius: 10px;
+            font-size: 12px;
+        }
+    </style>
+</head>
+<body>
+    <div class="container" id="cards-container">
+        <div class="card" style="background-image: url('/api/placeholder/600/320')">
+            <div class="timer">0:03</div>
+            <div class="card-content">
+                <h2>Machu Picchu</h2>
+                <p>Ancient Incan citadel set high in the Andes Mountains of Peru</p>
+            </div>
+        </div>
+        <div class="card" style="background-image: url('/api/placeholder/600/320')">
+            <div class="timer">0:06</div>
+            <div class="card-content">
+                <h2>Nature</h2>
+                <p>Explore the magnificent landscapes of untouched wilderness</p>
+            </div>
+        </div>
+        <div class="card" style="background-image: url('/api/placeholder/600/320')">
+            <div class="timer">0:09</div>
+            <div class="card-content">
+                <h2>Journey</h2>
+                <p>Travel through epic landscapes and inspiring destinations</p>
+            </div>
+        </div>
+        <div class="card" style="background-image: url('/api/placeholder/600/320')">
+            <div class="timer">0:12</div>
+            <div class="card-content">
+                <h2>Asia</h2>
+                <p>Discover the rich cultures and breathtaking scenery of Asia</p>
+            </div>
+        </div>
+        <div class="card" style="background-image: url('/api/placeholder/600/320')">
+            <div class="timer">0:15</div>
+            <div class="card-content">
+                <h2>Black Badge</h2>
+                <p>Luxury reimagined for the modern connoisseur</p>
+            </div>
+        </div>
+    </div>
+    
+    <div class="controls">
+        <button id="play-btn">Play</button>
+        <button id="restart-btn">Restart</button>
+    </div>
+    
+    <div class="thumbnails">
+        <div class="thumbnail" style="background-image: url('/api/placeholder/180/120')">
+            <div class="time">0:08</div>
+        </div>
+        <div class="thumbnail" style="background-image: url('/api/placeholder/180/120')">
+            <div class="time">0:05</div>
+        </div>
+        <div class="thumbnail" style="background-image: url('/api/placeholder/180/120')">
+            <div class="time">0:10</div>
+        </div>
+        <div class="thumbnail" style="background-image: url('/api/placeholder/180/120')">
+            <div class="time">0:07</div>
+        </div>
+        <div class="thumbnail" style="background-image: url('/api/placeholder/180/120')">
+            <div class="time">0:13</div>
+        </div>
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            const cards = document.querySelectorAll('.card');
+            const playBtn = document.getElementById('play-btn');
+            const restartBtn = document.getElementById('restart-btn');
+            let currentIndex = 0;
+            let isPlaying = false;
+            let timer;
+            
+            // Position cards initially
+            function positionCards() {
+                cards.forEach((card, index) => {
+                    // Reset
+                    card.classList.remove('active', 'expanded');
+                    card.style.left = `${50}%`;
+                    card.style.transform = 'translateX(-50%) translateY(50px) scale(0.8)';
+                    card.style.opacity = '0';
+                });
+            }
+            
+            // Show card at specific index
+            function showCard(index) {
+                if (index >= cards.length) {
+                    isPlaying = false;
+                    return;
+                }
+                
+                currentIndex = index;
+                
+                // Update all cards
+                cards.forEach((card, i) => {
+                    if (i === index) {
+                        card.classList.add('active');
+                        // Center the active card
+                        card.style.left = `${50}%`;
+                        card.style.transform = 'translateX(-50%) translateY(0) scale(1)';
+                        card.style.zIndex = '10';
+                    } else if (i < index) {
+                        // Move older cards to the left
+                        card.classList.add('active');
+                        card.classList.remove('expanded');
+                        card.style.left = `${20 + (i * 5)}%`;
+                        card.style.transform = 'translateX(0) scale(0.9)';
+                        card.style.zIndex = i;
+                    } else {
+                        // Future cards (not shown yet)
+                        card.classList.remove('active', 'expanded');
+                        card.style.left = `${50}%`;
+                        card.style.transform = 'translateX(-50%) translateY(50px) scale(0.8)';
+                        card.style.opacity = '0';
+                    }
+                });
+                
+                // Schedule next card if playing
+                if (isPlaying && index < cards.length - 1) {
+                    timer = setTimeout(() => {
+                        showCard(index + 1);
+                    }, 3000); // Show next card after 3 seconds
+                }
+            }
+            
+            // Play sequence
+            function playSequence() {
+                isPlaying = true;
+                showCard(0);
+            }
+            
+            // Reset and restart
+            function restart() {
+                clearTimeout(timer);
+                isPlaying = false;
+                currentIndex = 0;
+                positionCards();
+                setTimeout(() => {
+                    playSequence();
+                }, 300);
+            }
+            
+            // Handle card click
+            cards.forEach((card, index) => {
+                card.addEventListener('click', () => {
+                    // If this card is active and visible
+                    if (card.classList.contains('active')) {
+                        // Toggle expanded state
+                        cards.forEach(c => {
+                            if (c !== card) c.classList.remove('expanded');
+                        });
+                        card.classList.toggle('expanded');
+                    }
+                });
+            });
+            
+            // Button handlers
+            playBtn.addEventListener('click', () => {
+                if (!isPlaying) {
+                    if (currentIndex >= cards.length - 1) {
+                        restart();
+                    } else {
+                        isPlaying = true;
+                        showCard(currentIndex);
+                    }
+                }
+            });
+            
+            restartBtn.addEventListener('click', restart);
+            
+            // Initialize
+            positionCards();
+            
+            // Auto-play on load
+            setTimeout(playSequence, 1000);
+        });
+    </script>
+</body>
+</html> 
