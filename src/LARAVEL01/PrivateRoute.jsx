@@ -7,7 +7,7 @@ const PrivateRoute = ({ children, role }) => {
     useEffect(() => {
         if (!token || !user) {
             // Pas connecté => redirection vers login
-            window.location.href = '/connexion';
+            window.location.href = '/login';
         } else if (user.role !== role) {
             // Mauvais rôle => redirection vers sa propre page d'accueil
             switch (user.role) {

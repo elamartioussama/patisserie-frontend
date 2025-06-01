@@ -5,11 +5,37 @@ import  { useState, useEffect } from 'react';
 // import { updateStagiaireSuccess } from './Action';  // Importez l'action correspondante
 // import { useParams } from 'react-router-dom';
 import "./Acceuil.css";
+import { useNavigate } from 'react-router-dom';
 
 
   
 
 const Acceuil = () => {
+  const navigate = useNavigate();
+
+  useEffect(() => {
+    const user = JSON.parse(localStorage.getItem('user'));
+
+    if (user) {
+      // Redirige vers la page d'accueil spécifique selon le rôle
+      switch (user.role) {
+        case 'admin':
+          navigate('/admin/home');
+          break;
+        case 'client':
+          navigate('/client/home');
+          break;
+        case 'assembleur':
+          navigate('/assembleur/home');
+          break;
+        case 'livreur':
+          navigate('/livreur/home');
+          break;
+        default:
+          break;
+      }
+    }
+  }, [navigate]);
  
   return (
     <div style={{ backgroundColor: "white" }}>
@@ -39,18 +65,18 @@ const Acceuil = () => {
         <div className="collapse navbar-collapse justify-content-center" id="navbarNav">
           <ul className="navbar-nav">
             <li className="nav-item">
-              <a className="nav-link" href="#main2" style={{ color: 'black' }}>
-                Notre Pâtisserie
+              <a className="nav-link" href="/" style={{ color: 'black' }}>
+                Acceuil
               </a>
             </li>
             <li className="nav-item">
-              <a className="nav-link" href="#main666" style={{ color: 'black' }}>
+              <a className="nav-link" href="/productss" style={{ color: 'black' }}>
                 Nos Produits
               </a>
             </li>
             <li className="nav-item">
-              <a className="nav-link" href="#main6" style={{ color: 'black' }}>
-                Trouvez-nous
+              <a className="nav-link" href="/contact2" style={{ color: 'black' }}>
+                Contact
               </a>
             </li>
           </ul>
@@ -85,12 +111,12 @@ const Acceuil = () => {
         </div>
 
         <div className="main2" id="main2">
-          <h1>Notre patiserie</h1>
+          <h1>Notre patisserie</h1>
         </div>
 
         <div id="main3">
           <p style={{ color: "black" }}>
-            Les IIII cerises est une patiserie qui vous donne une grande expérience en viennoiserie, boulangerie, salé et gâteaux
+            Les IIII cerises est une patisserie qui vous donne une grande expérience en viennoiserie, boulangerie, salé et gâteaux
             <span> depuis 1958</span>. Géré par des chefs patissiers passionnés possédent plus de 15 ans d'expérience.
           </p>
           <p>
@@ -110,34 +136,54 @@ const Acceuil = () => {
           <h1>Nos produits</h1>
         </div>
 
-        <div id="main9">
-          {["boulangerie.html", "viennoiserie.html", "salé.html", "gateau.html"].map((link, index) => (
-            <div key={index} style={{ marginLeft: index === 0 ? "0" : "15px" }}>
-              <div className="main91">
-                <div className="main92">
-                  <img
-                    src={
-                      [
-                        "img/nouveuté/Pain maison sans machine à pain - chefNini.jfif",
-                        "img/nouveuté/nv5.jpg",
-                        "img/nouveuté/Recette - Mini-pastillas de poulet aux légumes.jfif",
-                        "img/nouveuté/t7.jpg"
-                      ][index]
-                    }
-                    alt="produit"
-                    width="380px"
-                    height="400px"
-                  />
-                  <div className="main93">
-                    <h4 style={{ marginTop: "130px" }}></h4>
-                    <a href={link}>{["Boulangerie", "Viennoiserie", "Salés", "gâteaux"][index]}</a>
-                  </div>
-                </div>
-              </div>
-            </div>
-          ))}
-        </div>
+        <div id="main99" style={{ display: 'flex', justifyContent: 'center', flexWrap: 'wrap', gap: '20px'}} >
+  {[
+    {
+      link: "/productss",
+      img: "img/nouveuté/Pain maison sans machine à pain - chefNini.jfif",
+      label: "Boulangerie"
+    },
+    {
+      link: "/productss",
+      img: "img/nouveuté/nv5.jpg",
+      label: "Viennoiserie"
+    },
+    {
+      link: "/productss",
+      img: "img/nouveuté/Recette - Mini-pastillas de poulet aux légumes.jfif",
+      label: "Salés"
+    },
+    {
+      link: "/productss",
+      img: "img/nouveuté/t7.jpg",
+      label: "Gâteaux"
+    }
+  ].map((item, index) => (
+    <div key={index} style={{ width: '235px', position: 'relative', overflow: 'hidden', borderRadius: '10px' }}>
+      <img
+        src={item.img}
+        alt={item.label}
+        style={{ width: '100%', height: '400px', objectFit: 'cover', borderRadius: '10px' }}
+      />
+      <div className="main93" style={{
+        position: 'absolute',
+        bottom: '20px',
+        left: '0',
+        width: '100%',
+        textAlign: 'center',
+        background: 'rgba(0, 0, 0, 0.5)',
+        padding: '10px',
+        color: 'white'
+      }}>
+        <a href={item.link} style={{ textDecoration: 'none', color: 'white', fontSize: '1.2rem' }}>
+          {item.label}
+        </a>
+      </div>
+    </div>
+  ))}
+</div>
 
+        <div className='p-5'></div>
         <div className="main2" id="main6">
           <h1>Trouvez nous</h1>
         </div>
